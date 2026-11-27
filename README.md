@@ -26,6 +26,10 @@
   <a href="https://github.com/JSisques/agent-radar/stargazers"><img alt="stars" src="https://img.shields.io/github/stars/JSisques/agent-radar?style=flat-square"></a>
 </p>
 
+<p align="center">
+  <img alt="Agent Radar in the OpenCode TUI: the sidebar lists running subagents with their current tool and elapsed time; the detail dialog shows a session summary, subagents in progress and the history of finished ones, with model, context, tokens and cost" src=".github/assets/agent-radar-preview.png" width="720">
+</p>
+
 `opencode-agent-radar` is an OpenCode 2 TUI plugin. When an agent delegates work to subagents, it shows **one row per subagent launch**: the tool it is running right now, its elapsed time, context window usage, tokens and estimated cost.
 
 > **Status:** early development (`0.x`). Used in OpenCode 2.4.1, typed against `@opencode/plugin` 2.4.2, with the domain rules covered by unit tests. See [Compatibility](#compatibility).
