@@ -25,6 +25,8 @@ export interface SessionSnapshot {
   readonly endedAt?: number
   /** Name of the tool the session is executing right now, if any. */
   readonly currentTool?: string
+  /** Distinct models the session has used, in order of first use; the last one is the current model. */
+  readonly models?: readonly string[]
   readonly tokens: TokenUsage
   /** Cost in USD; undefined when the host could not price it. */
   readonly costUsd: number | undefined
@@ -44,6 +46,8 @@ export interface AgentRow {
   readonly startedAt: number
   /** Own: the tool this session is running now. */
   readonly currentTool?: string
+  /** Own: distinct models used, in order of first use; empty when unknown. */
+  readonly models: readonly string[]
   /** Own: wall-clock time of this session. Children run inside it, so they are never added. */
   readonly elapsedMs: number
   /** Own: percentage of this session's context window, 0-100. */

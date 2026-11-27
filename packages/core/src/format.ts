@@ -26,6 +26,11 @@ export function formatPercent(value: number | undefined): string {
   return value === undefined ? "—" : `${Math.round(value)}%`
 }
 
+/** Models in order of use, e.g. `qwen3.8-27b → gpt-oss-20b`; empty when unknown. */
+export function formatModels(models: readonly string[]): string {
+  return models.join(" → ")
+}
+
 /** Ratio of agent time to wall time, e.g. `2.0×`; empty when unknown. */
 export function formatParallelism(value: number | undefined): string {
   return value === undefined ? "" : `${value.toFixed(1)}×`

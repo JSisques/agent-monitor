@@ -8,6 +8,7 @@ Every metric is defined per **row**, and a row is one subagent launch (one child
 | Metric | Scope | Definition | Unknown value |
 | --- | --- | --- | --- |
 | Agent | own | `SessionInfo.agent` | `agent` |
+| Models | own | Distinct model ids of the session's assistant messages, in order of first use; the last one is the current model. Before the first reply, `SessionInfo.model`. Shown as `a → b`. | hidden |
 | Current tool | own | Name of the last tool part in `running` or `streaming` state in the latest assistant message. Empty while the model is generating text. | shown as `thinking` |
 | Elapsed time | own | Running: `now − time.created`. Idle: `time.idle − time.created` (fallback `time.updated`). Children are never added. | — |
 | Context % | own | `contextUsed / model.limit.context × 100`, where `contextUsed` is input + output + reasoning + cache read + cache write of the latest assistant call. | `—` |

@@ -53,6 +53,7 @@ Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenl
 - **Per-launch rows.** Each subagent launch is its own row. Two `explore` runs are two rows, so you can compare them.
 - **Live sidebar.** A compact, collapsible panel lists only the subagents that are running: `agent · tool · time`.
 - **Full detail on demand.** Click the panel title or run `/agent-monitor` to open a centered dialog with a session summary, the subagents **in progress** and the **history** of finished ones.
+- **Model per subagent.** The detail dialog shows the model each subagent used, and every model it switched to.
 - **Session summary.** Number of subagents, wall time vs agent time with the resulting parallelism, and total tokens and cost.
 - **Nested subagents.** Subagents launched by subagents are hidden from the sidebar and shown, indented, in the detail dialog.
 - **Correct totals.** Cost and tokens include everything a subagent delegated; time and context are never double-counted. See [Aggregation rules](#aggregation-rules).
@@ -82,14 +83,14 @@ wall 3m 47s · agent time 3m 47s (1.0×)
 
 In progress (1)
 
-worker · task · Implement the login fix
+worker (qwen3.8-27b) · task · Implement the login fix
 3m 5s · ctx 61% · 310.2K tok · $0.40 (incl. 1 sub)
-  explore · done · Find callers of validateToken
+  explore (gpt-oss-20b) · done · Find callers of validateToken
   2m 0s · ctx 22% · 140.0K tok · $0.30
 
 History (1)
 
-explore · done · Map the auth module
+explore (qwen3.8-27b → gpt-oss-20b) · done · Map the auth module
 42s · ctx 18% · 52.3K tok · $0.04
 ```
 
@@ -156,6 +157,7 @@ A **row** is one subagent launch, which means one child session. Every metric ha
 | Metric | Scope | Definition | When unknown |
 | --- | --- | --- | --- |
 | Agent | own | The agent name of the session (`explore`, `worker`, …) | `agent` |
+| Models | own | Model ids used by the session, in order of first use (`a → b` if it switched); the last one is the current model | hidden |
 | Current tool | own | Last tool part in `running` or `streaming` state in the latest assistant message | `thinking` |
 | Elapsed time | own | Running: now − created. Finished: idle time − created | — |
 | Context % | own | Tokens of the latest model call ÷ the model's context limit | `—` |

@@ -1,6 +1,6 @@
 ﻿import { test } from "node:test"
 import assert from "node:assert/strict"
-import { formatCost, formatDuration, formatParallelism, formatTokens, sidebarLine } from "./format.ts"
+import { formatCost, formatDuration, formatModels, formatParallelism, formatTokens, sidebarLine } from "./format.ts"
 
 test("formatDuration uses seconds, then minutes, then hours", () => {
   assert.equal(formatDuration(900), "0s")
@@ -28,6 +28,12 @@ test("sidebarLine renders agent · tool · time", () => {
 
 test("sidebarLine says thinking when no tool is running", () => {
   assert.equal(sidebarLine({ agent: "worker", currentTool: undefined, elapsedMs: 5_000 }), "worker · thinking · 5s")
+})
+
+test("formatModels shows the models in order of use, or nothing when unknown", () => {
+  assert.equal(formatModels([]), "")
+  assert.equal(formatModels(["qwen3.8-27b"]), "qwen3.8-27b")
+  assert.equal(formatModels(["qwen3.8-27b", "gpt-oss-20b"]), "qwen3.8-27b → gpt-oss-20b")
 })
 
 test("parallelism formats with one decimal and a multiplication sign", () => {
