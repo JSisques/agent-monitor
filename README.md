@@ -1,15 +1,34 @@
-# opencode-agent-radar
+<h1 align="center">opencode-agent-radar</h1>
 
-> See what every OpenCode subagent is doing, how long it has been at it, and what it costs, without leaving the TUI.
+<p align="center">
+  See what every OpenCode subagent is doing, how long it has been at it, and what it costs, without leaving the TUI.
+</p>
 
-[![npm](https://img.shields.io/npm/v/opencode-agent-radar?style=flat-square&logo=npm)](https://www.npmjs.com/package/opencode-agent-radar)
-[![OpenCode 2](https://img.shields.io/badge/OpenCode-2-5A67D8?style=flat-square)](https://opencode.ai/)
-[![CI](https://img.shields.io/github/actions/workflow/status/JSisques/agent-radar/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/JSisques/agent-radar/actions/workflows/ci.yml)
-[![MIT License](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)](LICENSE)
+<p align="center">
+  <a href="https://www.npmjs.com/package/opencode-agent-radar"><img alt="npm version" src="https://img.shields.io/npm/v/opencode-agent-radar?style=flat-square&logo=npm&color=cb3837"></a>
+  <a href="https://www.npmjs.com/package/opencode-agent-radar"><img alt="npm downloads" src="https://img.shields.io/npm/dm/opencode-agent-radar?style=flat-square&label=downloads"></a>
+  <a href="https://github.com/JSisques/agent-radar/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/JSisques/agent-radar?style=flat-square&logo=github&label=release"></a>
+  <a href="LICENSE"><img alt="license" src="https://img.shields.io/github/license/JSisques/agent-radar?style=flat-square"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/JSisques/agent-radar/actions/workflows/ci.yml"><img alt="ci" src="https://img.shields.io/github/actions/workflow/status/JSisques/agent-radar/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=ci"></a>
+  <a href="https://github.com/JSisques/agent-radar/actions/workflows/publish.yml"><img alt="publish" src="https://img.shields.io/github/actions/workflow/status/JSisques/agent-radar/publish.yml?style=flat-square&logo=npm&label=publish"></a>
+  <a href="https://www.conventionalcommits.org/"><img alt="Conventional Commits" src="https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196?style=flat-square&logo=conventionalcommits&logoColor=white"></a>
+</p>
+
+<p align="center">
+  <a href="https://opencode.ai/"><img alt="OpenCode 2" src="https://img.shields.io/badge/OpenCode-2.x-5A67D8?style=flat-square"></a>
+  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square&logo=typescript&logoColor=white"></a>
+  <a href="https://turbo.build/"><img alt="Turborepo" src="https://img.shields.io/badge/Turborepo-monorepo-ef4444?style=flat-square&logo=turborepo&logoColor=white"></a>
+  <a href="https://github.com/JSisques/agent-radar/commits/main"><img alt="last commit" src="https://img.shields.io/github/last-commit/JSisques/agent-radar?style=flat-square"></a>
+  <a href="https://github.com/JSisques/agent-radar/issues"><img alt="open issues" src="https://img.shields.io/github/issues/JSisques/agent-radar?style=flat-square"></a>
+  <a href="https://github.com/JSisques/agent-radar/stargazers"><img alt="stars" src="https://img.shields.io/github/stars/JSisques/agent-radar?style=flat-square"></a>
+</p>
 
 `opencode-agent-radar` is an OpenCode 2 TUI plugin. When an agent delegates work to subagents, it shows **one row per subagent launch**: the tool it is running right now, its elapsed time, context window usage, tokens and estimated cost.
 
-> **Status:** early development (`0.x`). The plugin type-checks against `@opencode/plugin` 2.4.2 and its domain rules are covered by unit tests, but it has not been verified inside a live OpenCode host yet. See [Compatibility](#compatibility).
+> **Status:** early development (`0.x`). Used in OpenCode 2.4.1, typed against `@opencode/plugin` 2.4.2, with the domain rules covered by unit tests. See [Compatibility](#compatibility).
 
 ---
 
