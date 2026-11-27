@@ -1,0 +1,54 @@
+{
+  "name": "opencode-agent-monitor",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "OpenCode TUI plugin that shows, per subagent, the tool it is running, its elapsed time, tokens, context usage and cost.",
+  "type": "module",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "subagents",
+    "agents",
+    "token-usage",
+    "terminal-ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JSisques/agent-monitor.git",
+    "directory": "packages/opencode-plugin"
+  },
+  "exports": {
+    "./tui": "./dist/tui.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@opencode/plugin": "^2.4.2"
+  },
+  "peerDependencies": {
+    "@opentui/core": ">=0.8.0",
+    "@opentui/solid": ">=0.8.0",
+    "solid-js": ">=1.9.12"
+  },
+  "devDependencies": {
+    "@agent-monitor/core": "workspace:*",
+    "@babel/core": "^7.28.0",
+    "@opentui/core": "^0.9.9",
+    "@opentui/solid": "^0.9.9",
+    "@types/node": "^24.0.0",
+    "babel-preset-solid": "^1.9.19",
+    "esbuild": "^0.28.2",
+    "solid-js": "^1.9.12",
+    "typescript": "^5.9.0"
+  }
+}
