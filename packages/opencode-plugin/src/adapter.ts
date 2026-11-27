@@ -1,5 +1,5 @@
 import type { Plugin } from "@opencode/plugin/tui"
-import type { SessionSnapshot, SessionSource } from "@agent-monitor/core"
+import type { SessionSnapshot, SessionSource } from "@agent-radar/core"
 
 type Data = Plugin.Context["data"]
 type MessageInfo = ReturnType<Data["session"]["message"]["list"]>[number]

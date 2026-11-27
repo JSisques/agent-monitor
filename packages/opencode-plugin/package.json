@@ -1,6 +1,6 @@
 {
-  "name": "opencode-agent-monitor",
-  "version": "0.1.0",
+  "name": "opencode-agent-radar",
+  "version": "0.0.0",
   "license": "MIT",
   "description": "OpenCode TUI plugin that shows, per subagent, the tool it is running, its elapsed time, tokens, context usage and cost.",
   "type": "module",
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JSisques/agent-monitor.git",
+    "url": "git+https://github.com/JSisques/agent-radar.git",
     "directory": "packages/opencode-plugin"
   },
   "exports": {
@@ -41,7 +41,7 @@
     "solid-js": ">=1.9.12"
   },
   "devDependencies": {
-    "@agent-monitor/core": "workspace:*",
+    "@agent-radar/core": "workspace:*",
     "@babel/core": "^7.28.0",
     "@opentui/core": "^0.9.9",
     "@opentui/solid": "^0.9.9",

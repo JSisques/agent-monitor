@@ -6,8 +6,8 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: 'opencode-agent-monitor',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/JSisques/agent-monitor' }],
+			title: 'opencode-agent-radar',
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/JSisques/agent-radar' }],
 			sidebar: [
 				{ label: 'Guides', items: [{ autogenerate: { directory: 'guides' } }] },
 				{ label: 'Specs', items: [{ autogenerate: { directory: 'specs' } }] },

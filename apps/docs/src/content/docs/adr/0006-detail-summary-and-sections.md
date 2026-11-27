@@ -42,7 +42,7 @@ There is no context percentage in the summary: context windows are not additive.
 
 - A `▼` / `▶` toggle collapses and expands the subagent list, as OpenCode does for its own sidebar sections.
 - The title still opens the detail dialog; the toggle and the title are separate click targets.
-- While collapsed, the title shows the number of running subagents: `▶ Agent Monitor (2)`.
+- While collapsed, the title shows the number of running subagents: `▶ Agent Radar (2)`.
 - The collapsed state is persisted with the plugin storage API and survives restarts.
 
 ## Consequences
