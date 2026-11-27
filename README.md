@@ -385,9 +385,9 @@ pnpm docs:dev
 
 ## Contributing
 
-Issues and pull requests are welcome. Please:
+Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, how to try a local build in OpenCode, and the conventions for specs, tests, commits and pull requests. In short:
 
-- use Conventional Commits,
+- use Conventional Commits; PR titles become the squash commit,
 - add or update a spec in `apps/docs` before changing behavior,
 - add a test in `packages/core` for any aggregation change,
 - run `pnpm check` before opening a PR.
