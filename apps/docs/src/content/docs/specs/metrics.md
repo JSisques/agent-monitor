@@ -14,6 +14,21 @@ Every metric is defined per **row**, and a row is one subagent launch (one child
 | Tokens | subtree | Sum of input, output, reasoning, cache read and cache write of the session and all descendants. | 0 |
 | Cost | subtree | Sum of `SessionInfo.cost` (USD, as reported by OpenCode) of the session and all descendants. | `—`; `partial` if some descendants are unknown |
 
+## Session summary
+
+Shown at the top of the detail dialog. The root session itself is excluded.
+
+| Metric | Definition |
+| --- | --- |
+| Agents / running / done | Subagent sessions at any depth, split by status |
+| Wall time | Length of the union of the direct children's `[start, end]` intervals (running children end at now) |
+| Agent time | Sum of the direct children's own elapsed time |
+| Parallelism | Agent time ÷ wall time, one decimal (`2.0×`); hidden when wall time is 0 |
+| Tokens | Sum over every subagent at any depth |
+| Cost | Sum over every subagent at any depth; `partial` if any is unknown |
+
+Grandchildren are excluded from both time values because their time already runs inside their parent's.
+
 ## Formatting
 
 | Value | Format | Examples |

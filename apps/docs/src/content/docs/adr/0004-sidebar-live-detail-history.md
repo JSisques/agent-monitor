@@ -3,7 +3,7 @@ title: "ADR-0004: Sidebar shows live children, detail shows full history"
 description: The sidebar is a glanceable live view; the detail dialog is the complete record.
 ---
 
-- **Status:** Accepted
+- **Status:** Accepted, refined by [ADR-0006](/adr/0006-detail-summary-and-sections/)
 - **Date:** 2026-11-27
 
 ## Context

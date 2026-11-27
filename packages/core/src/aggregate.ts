@@ -1,4 +1,4 @@
-import type { AgentRow, MonitorState, SessionSnapshot, TokenUsage } from "./model.ts"
+import type { AgentRow, MonitorState, MonitorSummary, SessionSnapshot, TokenUsage } from "./model.ts"
 
 const ZERO_TOKENS: TokenUsage = { input: 0, output: 0, reasoning: 0, cacheRead: 0, cacheWrite: 0 }
 
@@ -57,6 +57,7 @@ export function buildMonitor(rootId: string, sessions: readonly SessionSnapshot[
       agent: session.agent,
       title: session.title,
       status: session.status,
+      startedAt: session.startedAt,
       currentTool: session.currentTool,
       elapsedMs: Math.max(0, end - session.startedAt),
       contextPercent,
@@ -76,8 +77,68 @@ export function buildMonitor(rootId: string, sessions: readonly SessionSnapshot[
 
   return {
     live: history.filter((row) => row.status === "running"),
+    finished: history.filter((row) => row.status !== "running"),
     history,
+    summary: summarize(history, now),
   }
+}
+
+function summarize(directChildren: readonly AgentRow[], now: number): MonitorSummary {
+  let agents = 0
+  let running = 0
+  const count = (row: AgentRow) => {
+    agents += 1
+    if (row.status === "running") running += 1
+    row.children.forEach(count)
+  }
+  directChildren.forEach(count)
+
+  let tokens = ZERO_TOKENS
+  let costUsd: number | undefined
+  let costPartial = false
+  let agentMs = 0
+  for (const row of directChildren) {
+    tokens = addTokens(tokens, row.tokens)
+    if (row.costUsd !== undefined) costUsd = (costUsd ?? 0) + row.costUsd
+    costPartial ||= row.costPartial
+    agentMs += row.elapsedMs
+  }
+
+  const wallMs = unionLength(directChildren.map((row) => intervalOf(row, now)))
+
+  return {
+    agents,
+    running,
+    done: agents - running,
+    wallMs,
+    agentMs,
+    parallelism: wallMs > 0 ? agentMs / wallMs : undefined,
+    tokens,
+    costUsd,
+    costPartial,
+  }
+}
+
+const intervalOf = (row: AgentRow, now: number): readonly [number, number] => {
+  const end = row.status === "running" ? now : row.startedAt + row.elapsedMs
+  return [row.startedAt, end]
+}
+
+/** Total length covered by possibly overlapping intervals. */
+function unionLength(intervals: ReadonlyArray<readonly [number, number]>): number {
+  const sorted = [...intervals].sort((a, b) => a[0] - b[0])
+  let total = 0
+  let current: [number, number] | undefined
+  for (const [start, end] of sorted) {
+    if (!current || start > current[1]) {
+      if (current) total += current[1] - current[0]
+      current = [start, end]
+    } else if (end > current[1]) {
+      current[1] = end
+    }
+  }
+  if (current) total += current[1] - current[0]
+  return total
 }
 
 export { ZERO_TOKENS }

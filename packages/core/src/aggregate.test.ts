@@ -121,3 +121,85 @@ test("rows are ordered by start time", () => {
 
   assert.deepEqual(state.history.map((row) => row.sessionId), ["early", "late"])
 })
+
+test("finished direct children form the history section; running ones stay out of it", () => {
+  const state = buildMonitor("root", [
+    session({ id: "root" }),
+    session({ id: "done", parentId: "root", status: "idle", startedAt: 1 }),
+    session({ id: "live", parentId: "root", status: "running", startedAt: 2 }),
+  ], 10)
+
+  assert.deepEqual(state.finished.map((row) => row.sessionId), ["done"])
+  assert.deepEqual(state.live.map((row) => row.sessionId), ["live"])
+})
+
+test("summary counts every subagent launch at any depth, excluding the root", () => {
+  const state = buildMonitor("root", [
+    session({ id: "root", status: "running" }),
+    session({ id: "worker", parentId: "root", status: "running" }),
+    session({ id: "explore", parentId: "worker", status: "idle" }),
+    session({ id: "other", parentId: "root", status: "idle" }),
+  ], 0)
+
+  assert.equal(state.summary.agents, 3)
+  assert.equal(state.summary.running, 1)
+  assert.equal(state.summary.done, 2)
+})
+
+test("summary tokens and cost include every descendant but not the root", () => {
+  const state = buildMonitor("root", [
+    session({ id: "root", costUsd: 9, tokens: tokens(9000) }),
+    session({ id: "worker", parentId: "root", costUsd: 0.1, tokens: tokens(100) }),
+    session({ id: "explore", parentId: "worker", costUsd: 0.3, tokens: tokens(300) }),
+  ], 0)
+
+  assert.ok(Math.abs(state.summary.costUsd! - 0.4) < 1e-9)
+  assert.equal(state.summary.costPartial, false)
+  assert.equal(state.summary.tokens.input, 400)
+})
+
+test("summary agent time sums direct children; wall time is their union on the clock", () => {
+  const minute = 60_000
+  const state = buildMonitor("root", [
+    session({ id: "root" }),
+    session({ id: "a", parentId: "root", startedAt: 0, endedAt: 4 * minute }),
+    session({ id: "b", parentId: "root", startedAt: 0, endedAt: 4 * minute }),
+  ], 10 * minute)
+
+  assert.equal(state.summary.agentMs, 8 * minute)
+  assert.equal(state.summary.wallMs, 4 * minute)
+  assert.equal(state.summary.parallelism, 2)
+})
+
+test("summary time never counts a grandchild, whose time already runs inside its parent", () => {
+  const minute = 60_000
+  const state = buildMonitor("root", [
+    session({ id: "root" }),
+    session({ id: "worker", parentId: "root", startedAt: 0, endedAt: 5 * minute }),
+    session({ id: "explore", parentId: "worker", startedAt: 1 * minute, endedAt: 3 * minute }),
+  ], 10 * minute)
+
+  assert.equal(state.summary.agentMs, 5 * minute)
+  assert.equal(state.summary.wallMs, 5 * minute)
+})
+
+test("summary wall time skips gaps between sequential children", () => {
+  const minute = 60_000
+  const state = buildMonitor("root", [
+    session({ id: "root" }),
+    session({ id: "a", parentId: "root", startedAt: 0, endedAt: 2 * minute }),
+    session({ id: "b", parentId: "root", startedAt: 5 * minute, endedAt: 6 * minute }),
+  ], 10 * minute)
+
+  assert.equal(state.summary.wallMs, 3 * minute)
+  assert.equal(state.summary.agentMs, 3 * minute)
+})
+
+test("summary of a session without subagents is empty and has no parallelism", () => {
+  const state = buildMonitor("root", [session({ id: "root" })], 0)
+
+  assert.equal(state.summary.agents, 0)
+  assert.equal(state.summary.wallMs, 0)
+  assert.equal(state.summary.parallelism, undefined)
+  assert.equal(state.summary.costUsd, undefined)
+})

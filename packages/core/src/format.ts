@@ -26,6 +26,11 @@ export function formatPercent(value: number | undefined): string {
   return value === undefined ? "—" : `${Math.round(value)}%`
 }
 
+/** Ratio of agent time to wall time, e.g. `2.0×`; empty when unknown. */
+export function formatParallelism(value: number | undefined): string {
+  return value === undefined ? "" : `${value.toFixed(1)}×`
+}
+
 /** The single sidebar line for a live subagent: `agent · tool · time`. */
 export function sidebarLine(row: Pick<AgentRow, "agent" | "currentTool" | "elapsedMs">): string {
   return `${row.agent} · ${row.currentTool ?? "thinking"} · ${formatDuration(row.elapsedMs)}`

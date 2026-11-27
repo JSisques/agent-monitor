@@ -4,17 +4,19 @@ import {
   buildMonitor,
   formatCost,
   formatDuration,
+  formatParallelism,
   formatPercent,
   formatTokens,
   sidebarLine,
   type AgentRow,
   type MonitorState,
+  type MonitorSummary,
 } from "@agent-monitor/core"
 import { OpenCodeSessionSource } from "./adapter.ts"
 
 const TICK_MS = 1000
 
-const totalTokens = (row: AgentRow) =>
+const totalTokens = (row: Pick<AgentRow, "tokens">) =>
   row.tokens.input + row.tokens.output + row.tokens.reasoning + row.tokens.cacheRead + row.tokens.cacheWrite
 
 export default Plugin.define({
@@ -23,6 +25,14 @@ export default Plugin.define({
     const source = new OpenCodeSessionSource(context.data)
     const [now, setNow] = createSignal(Date.now())
     const [version, setVersion] = createSignal(0)
+
+    // Persisted, so the sidebar stays collapsed across restarts like OpenCode's own sections.
+    const [sidebar, updateSidebar] = context.storage.store("agent-monitor.sidebar", { initial: { collapsed: false } })
+    const toggleSidebar = () => {
+      void updateSidebar((draft) => {
+        draft.collapsed = !draft.collapsed
+      })
+    }
 
     const unsubscribe = source.subscribe(() => setVersion((value) => value + 1))
     const timer = setInterval(() => setNow(Date.now()), TICK_MS)
@@ -52,6 +62,32 @@ export default Plugin.define({
       </box>
     )
 
+    const Summary = (props: { summary: MonitorSummary }) => (
+      <box flexDirection="column">
+        <text fg={base()}>
+          {props.summary.agents} agents · {props.summary.running} running · {props.summary.done} done
+        </text>
+        <text fg={muted()}>
+          wall {formatDuration(props.summary.wallMs)} · agent time {formatDuration(props.summary.agentMs)}
+          {props.summary.parallelism === undefined ? "" : ` (${formatParallelism(props.summary.parallelism)})`}
+        </text>
+        <text fg={muted()}>
+          {formatTokens(totalTokens(props.summary))} tok · {formatCost(props.summary.costUsd, props.summary.costPartial)}
+        </text>
+      </box>
+    )
+
+    const Section = (props: { title: string; rows: readonly AgentRow[]; empty: string }) => (
+      <box flexDirection="column" gap={1}>
+        <text fg={base()}>
+          <b>{props.title}</b> ({props.rows.length})
+        </text>
+        <Show when={props.rows.length > 0} fallback={<text fg={muted()}>{props.empty}</text>}>
+          <For each={props.rows}>{(row) => <DetailRow row={row} depth={0} />}</For>
+        </Show>
+      </box>
+    )
+
     const openDetail = (sessionID: string) => {
       const state = monitorFor(sessionID)
       context.ui.dialog.show(() => (
@@ -65,9 +101,11 @@ export default Plugin.define({
             </text>
           </box>
           <Show when={state().history.length > 0} fallback={<text fg={muted()}>No subagents launched in this session yet.</text>}>
+            <Summary summary={state().summary} />
             <scrollbox maxHeight={30} scrollbarOptions={{ visible: false }}>
               <box flexDirection="column" gap={1}>
-                <For each={state().history}>{(row) => <DetailRow row={row} depth={0} />}</For>
+                <Section title="In progress" rows={state().live} empty="No subagents running" />
+                <Section title="History" rows={state().finished} empty="No subagents finished yet" />
               </box>
             </scrollbox>
           </Show>
@@ -102,11 +140,19 @@ export default Plugin.define({
         const state = monitorFor(input.sessionID)
         return (
           <box flexDirection="column" marginTop={1} flexShrink={0}>
-            <text fg={base()} onMouseUp={() => openDetail(input.sessionID)}>
-              <b>Agent Monitor</b>
-            </text>
-            <Show when={state().live.length > 0} fallback={<text fg={muted()}>No subagents running</text>}>
-              <For each={state().live}>{(row) => <text fg={muted()}>{sidebarLine(row)}</text>}</For>
+            <box flexDirection="row" gap={1}>
+              <text fg={muted()} onMouseUp={toggleSidebar}>
+                {sidebar.collapsed ? "▶" : "▼"}
+              </text>
+              <text fg={base()} onMouseUp={() => openDetail(input.sessionID)}>
+                <b>Agent Monitor</b>
+                {state().live.length > 0 ? ` (${state().live.length})` : ""}
+              </text>
+            </box>
+            <Show when={!sidebar.collapsed}>
+              <Show when={state().live.length > 0} fallback={<text fg={muted()}>No subagents running</text>}>
+                <For each={state().live}>{(row) => <text fg={muted()}>{sidebarLine(row)}</text>}</For>
+              </Show>
             </Show>
           </box>
         )

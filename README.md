@@ -51,8 +51,9 @@ Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenl
 ## Features
 
 - **Per-launch rows.** Each subagent launch is its own row. Two `explore` runs are two rows, so you can compare them.
-- **Live sidebar.** A compact panel lists only the subagents that are running: `agent · tool · time`.
-- **Full detail on demand.** Click the panel title or run `/agent-monitor` to open a centered dialog with every subagent of the session, finished ones included.
+- **Live sidebar.** A compact, collapsible panel lists only the subagents that are running: `agent · tool · time`.
+- **Full detail on demand.** Click the panel title or run `/agent-monitor` to open a centered dialog with a session summary, the subagents **in progress** and the **history** of finished ones.
+- **Session summary.** Number of subagents, wall time vs agent time with the resulting parallelism, and total tokens and cost.
 - **Nested subagents.** Subagents launched by subagents are hidden from the sidebar and shown, indented, in the detail dialog.
 - **Correct totals.** Cost and tokens include everything a subagent delegated; time and context are never double-counted. See [Aggregation rules](#aggregation-rules).
 - **Single package.** The domain logic is bundled into the plugin; there is nothing else to install.
@@ -62,27 +63,45 @@ Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenl
 **Sidebar** (only running direct subagents):
 
 ```text
-Agent Monitor
+▼ Agent Monitor (3)
 explore · read · 1m 12s
 explore · grep · 18s
 worker · task · 3m 5s
 ```
 
-`thinking` replaces the tool while the model is generating instead of running a tool. With no running subagents the panel shows `No subagents running`.
+`thinking` replaces the tool while the model is generating instead of running a tool. With no running subagents the panel shows `No subagents running`. Click `▼` to collapse the list to `▶ Agent Monitor (3)`; the choice is remembered across restarts.
 
 **Detail dialog** (`/agent-monitor` or click the title):
 
 ```text
 Agent Monitor                                              esc
 
-explore · done · Map the auth module
-42s · ctx 18% · 52.3K tok · $0.04
+3 agents · 1 running · 2 done
+wall 3m 47s · agent time 3m 47s (1.0×)
+362.5K tok · $0.44
+
+In progress (1)
 
 worker · task · Implement the login fix
 3m 5s · ctx 61% · 310.2K tok · $0.40 (incl. 1 sub)
   explore · done · Find callers of validateToken
   2m 0s · ctx 22% · 140.0K tok · $0.30
+
+History (1)
+
+explore · done · Map the auth module
+42s · ctx 18% · 52.3K tok · $0.04
 ```
+
+The summary at the top covers every subagent of the session:
+
+| Value | Meaning |
+| --- | --- |
+| `3 agents · 1 running · 2 done` | Subagent launches at any depth |
+| `wall` | How long at least one subagent was running: the time you spent waiting |
+| `agent time` | Sum of each subagent's own time: the amount of work, like person-hours |
+| `(1.0×)` | Parallelism, `agent time ÷ wall`. `2.0×` means two subagents worked side by side on average |
+| tokens · cost | Totals for every subagent, the main session excluded |
 
 ## Installation
 
@@ -123,6 +142,7 @@ Then add the absolute path of `packages/opencode-plugin` to `plugins` in the tar
 | Action | How |
 | --- | --- |
 | See running subagents | Open a session; the **Agent Monitor** panel appears in the sidebar |
+| Collapse or expand the panel | Click `▼` / `▶` next to the title |
 | Open the detail dialog | Click the **Agent Monitor** title, run `/agent-monitor`, or pick **Agent monitor** in the command palette |
 | Scroll the detail dialog | Mouse wheel |
 | Close the detail dialog | `esc`, or click `esc` in the dialog header |
@@ -162,6 +182,8 @@ The sidebar only shows direct subagents, so a nested subagent's spend has to be 
 | Current tool | `task` | While waiting for its subagent, the worker *is* running the `task` tool. |
 
 The detail dialog lists the nested `explore` with its own values, so every subtree total can be broken down. Decision record: [ADR-0003](apps/docs/src/content/docs/adr/0003-aggregation-rules.md).
+
+The **session summary** applies the same logic. Both of its time values use direct subagents only, because a nested subagent's time already runs inside its parent's. If two subagents run in parallel from 10:00 to 10:04, the summary shows `wall 4m · agent time 8m (2.0×)`. Both numbers are correct, and their labels say which question each one answers. Decision record: [ADR-0006](apps/docs/src/content/docs/adr/0006-detail-summary-and-sections.md).
 
 ## Compatibility
 
@@ -290,7 +312,7 @@ Unit tests live next to the code in `packages/core/src/*.test.ts` and run with `
 pnpm test
 ```
 
-They pin every rule in [Aggregation rules](#aggregation-rules): one row per launch, live vs history, nesting, subtree cost and tokens, `partial` costs, own elapsed time, own context and tool, and ordering, plus all formatting.
+They pin every rule in [Aggregation rules](#aggregation-rules): one row per launch, in-progress vs history, nesting, subtree cost and tokens, `partial` costs, own elapsed time, own context and tool, ordering, and the session summary (counts, wall time as an interval union, agent time, parallelism), plus all formatting.
 
 ## Release process
 
@@ -315,7 +337,7 @@ Repository setup:
 | Guides | Installation, usage, development |
 | Specs | [Metrics](apps/docs/src/content/docs/specs/metrics.md), [UI](apps/docs/src/content/docs/specs/ui.md) |
 | Architecture | [Overview](apps/docs/src/content/docs/architecture/overview.md) |
-| Decisions (ADR) | [0001 monorepo](apps/docs/src/content/docs/adr/0001-monorepo-layout.md) · [0002 one row per launch](apps/docs/src/content/docs/adr/0002-one-row-per-launch.md) · [0003 aggregation rules](apps/docs/src/content/docs/adr/0003-aggregation-rules.md) · [0004 sidebar vs detail](apps/docs/src/content/docs/adr/0004-sidebar-live-detail-history.md) · [0005 bundle core](apps/docs/src/content/docs/adr/0005-bundle-core-into-plugin.md) |
+| Decisions (ADR) | [0001 monorepo](apps/docs/src/content/docs/adr/0001-monorepo-layout.md) · [0002 one row per launch](apps/docs/src/content/docs/adr/0002-one-row-per-launch.md) · [0003 aggregation rules](apps/docs/src/content/docs/adr/0003-aggregation-rules.md) · [0004 sidebar vs detail](apps/docs/src/content/docs/adr/0004-sidebar-live-detail-history.md) · [0005 bundle core](apps/docs/src/content/docs/adr/0005-bundle-core-into-plugin.md) · [0006 summary and sections](apps/docs/src/content/docs/adr/0006-detail-summary-and-sections.md) |
 
 ```sh
 pnpm docs:dev
