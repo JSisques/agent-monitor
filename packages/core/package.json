@@ -1,6 +1,6 @@
 {
   "name": "@agent-radar/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "private": true,
   "description": "UI-free domain model and aggregation rules for opencode-agent-radar.",
