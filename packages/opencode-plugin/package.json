@@ -1,6 +1,6 @@
 {
   "name": "opencode-agent-monitor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "OpenCode TUI plugin that shows, per subagent, the tool it is running, its elapsed time, tokens, context usage and cost.",
   "type": "module",
