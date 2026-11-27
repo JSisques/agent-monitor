@@ -103,6 +103,24 @@ test("context percentage and current tool belong to the session itself", () => {
   assert.equal(worker.contextPercent, 60)
 })
 
+test("models are the session's own, in order of use, never merged with children", () => {
+  const state = buildMonitor("root", [
+    session({ id: "root" }),
+    session({ id: "worker", parentId: "root", models: ["qwen3.8-27b", "gpt-oss-20b"] }),
+    session({ id: "explore", parentId: "worker", models: ["claude-haiku-5-5"] }),
+  ], 0)
+
+  const worker = state.history[0]!
+  assert.deepEqual(worker.models, ["qwen3.8-27b", "gpt-oss-20b"])
+  assert.deepEqual(worker.children[0]?.models, ["claude-haiku-5-5"])
+})
+
+test("models default to an empty list when unknown", () => {
+  const state = buildMonitor("root", [session({ id: "root" }), session({ id: "a", parentId: "root" })], 0)
+
+  assert.deepEqual(state.history[0]?.models, [])
+})
+
 test("context percentage is undefined without a known limit", () => {
   const state = buildMonitor("root", [
     session({ id: "root" }),

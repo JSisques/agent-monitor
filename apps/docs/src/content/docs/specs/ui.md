@@ -33,14 +33,14 @@ wall 3m 47s · agent time 3m 47s (1.0×)
 
 In progress (1)
 
-worker · task · Implement the login fix
+worker (qwen3.8-27b) · task · Implement the login fix
 3m 5s · ctx 61% · 310.2K tok · $0.40 (incl. 1 sub)
-  explore · done · Find callers of validateToken
+  explore (gpt-oss-20b) · done · Find callers of validateToken
   2m 0s · ctx 22% · 140.0K tok · $0.30
 
 History (1)
 
-explore · done · Map the auth module
+explore (qwen3.8-27b → gpt-oss-20b) · done · Map the auth module
 42s · ctx 18% · 52.3K tok · $0.04
 ```
 
@@ -58,7 +58,7 @@ explore · done · Map the auth module
 - **History**: finished direct children of the main session.
 - Each section shows its count and an empty-state line (`No subagents running`, `No subagents finished yet`).
 - Rows are ordered by start time; descendants are nested and indented under their parent.
-- Row line 1: agent · current tool (or `done`) · session title.
+- Row line 1: agent (models used, `a → b` when the session switched) · current tool (or `done`) · session title.
 - Row line 2: elapsed time · context % · tokens · cost, with `(incl. N sub)` when the totals include descendants.
 - Empty dialog: `No subagents launched in this session yet.`
 

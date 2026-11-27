@@ -25,6 +25,16 @@ function contextUsed(messages: readonly MessageInfo[]): number | undefined {
   return input + output + reasoning + cache.read + cache.write
 }
 
+/** Distinct model ids in order of first use; falls back to the session's model before any reply. */
+function modelsUsed(messages: readonly MessageInfo[], sessionModel: { id: string } | undefined): string[] {
+  const models: string[] = []
+  for (const message of messages) {
+    if (isAssistant(message) && !models.includes(message.model.id)) models.push(message.model.id)
+  }
+  if (models.length === 0 && sessionModel) models.push(sessionModel.id)
+  return models
+}
+
 /** Adapts OpenCode's TUI data store to the core `SessionSource` port. */
 export class OpenCodeSessionSource implements SessionSource {
   private readonly requested = new Set<string>()
@@ -58,6 +68,7 @@ export class OpenCodeSessionSource implements SessionSource {
         startedAt: info.time.created,
         endedAt: status === "idle" ? (info.time.idle ?? info.time.updated) : undefined,
         currentTool: status === "running" ? currentTool(messages) : undefined,
+        models: modelsUsed(messages, info.model),
         tokens: {
           input: info.tokens.input,
           output: info.tokens.output,

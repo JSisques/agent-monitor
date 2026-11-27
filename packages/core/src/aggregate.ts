@@ -59,6 +59,7 @@ export function buildMonitor(rootId: string, sessions: readonly SessionSnapshot[
       status: session.status,
       startedAt: session.startedAt,
       currentTool: session.currentTool,
+      models: session.models ?? [],
       elapsedMs: Math.max(0, end - session.startedAt),
       contextPercent,
       tokens,

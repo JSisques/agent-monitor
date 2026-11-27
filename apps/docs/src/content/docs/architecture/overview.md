@@ -45,6 +45,7 @@ The project follows a ports-and-adapters (hexagonal) layout. The domain rules kn
 | `status` | `data.session.status(id)` (`running` / `idle`) |
 | `startedAt`, `endedAt` | `SessionInfo.time.created`, `.time.idle` (fallback `.time.updated`) |
 | `tokens`, `costUsd` | `SessionInfo.tokens`, `SessionInfo.cost` |
+| `models` | distinct `model.id` of the assistant messages in order; before the first reply, `SessionInfo.model.id` |
 | `currentTool` | last assistant message, last tool part in `running` or `streaming` state |
 | `contextUsed` | last assistant message with `tokens`: input + output + reasoning + cache read + cache write |
 | `contextLimit` | the session model's `limit.context` from `data.location.model.list()` |

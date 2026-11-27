@@ -4,6 +4,7 @@ import {
   buildMonitor,
   formatCost,
   formatDuration,
+  formatModels,
   formatParallelism,
   formatPercent,
   formatTokens,
@@ -50,7 +51,9 @@ export default Plugin.define({
     const DetailRow = (props: { row: AgentRow; depth: number }) => (
       <box flexDirection="column" paddingLeft={props.depth * 2}>
         <text fg={base()}>
-          {props.row.agent} · {props.row.status === "running" ? (props.row.currentTool ?? "thinking") : "done"}
+          {props.row.agent}
+          {props.row.models.length > 0 ? ` (${formatModels(props.row.models)})` : ""} ·{" "}
+          {props.row.status === "running" ? (props.row.currentTool ?? "thinking") : "done"}
           {props.row.title ? ` · ${props.row.title}` : ""}
         </text>
         <text fg={muted()}>
