@@ -2,7 +2,7 @@ name: publish
 
 # Publishing is decoupled from versioning: release-please cuts the GitHub
 # release, and this workflow ships that tag to npm via trusted publishing (OIDC).
-# Only the plugin is published; @agent-monitor/core is private and bundled into it.
+# Only the plugin is published; @agent-radar/core is private and bundled into it.
 on:
   release:
     types: [published]
@@ -41,7 +41,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
 
-      - name: Publish opencode-agent-monitor
+      - name: Publish opencode-agent-radar
         working-directory: packages/opencode-plugin
         run: |
           name=$(node -p "require('./package.json').name")

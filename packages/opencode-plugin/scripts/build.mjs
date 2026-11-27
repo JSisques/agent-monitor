@@ -1,4 +1,4 @@
-// Bundles the plugin and the private @agent-monitor/core package into one file.
+// Bundles the plugin and the private @agent-radar/core package into one file.
 // esbuild keeps JSX untouched (`jsx: "preserve"`); babel-preset-solid then compiles
 // it for OpenTUI's universal renderer, the same way OpenCode's own plugins do.
 import { build } from "esbuild"

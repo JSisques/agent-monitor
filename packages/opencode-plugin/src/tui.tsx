@@ -12,7 +12,7 @@ import {
   type AgentRow,
   type MonitorState,
   type MonitorSummary,
-} from "@agent-monitor/core"
+} from "@agent-radar/core"
 import { OpenCodeSessionSource } from "./adapter.ts"
 
 const TICK_MS = 1000
@@ -21,14 +21,14 @@ const totalTokens = (row: Pick<AgentRow, "tokens">) =>
   row.tokens.input + row.tokens.output + row.tokens.reasoning + row.tokens.cacheRead + row.tokens.cacheWrite
 
 export default Plugin.define({
-  id: "agent-monitor.tui",
+  id: "agent-radar.tui",
   setup(context) {
     const source = new OpenCodeSessionSource(context.data)
     const [now, setNow] = createSignal(Date.now())
     const [version, setVersion] = createSignal(0)
 
     // Persisted, so the sidebar stays collapsed across restarts like OpenCode's own sections.
-    const [sidebar, updateSidebar] = context.storage.store("agent-monitor.sidebar", { initial: { collapsed: false } })
+    const [sidebar, updateSidebar] = context.storage.store("agent-radar.sidebar", { initial: { collapsed: false } })
     const toggleSidebar = () => {
       void updateSidebar((draft) => {
         draft.collapsed = !draft.collapsed
@@ -97,7 +97,7 @@ export default Plugin.define({
         <box flexDirection="column" paddingLeft={2} paddingRight={2} paddingBottom={1} gap={1}>
           <box flexDirection="row" justifyContent="space-between">
             <text fg={base()}>
-              <b>Agent Monitor</b>
+              <b>Agent Radar</b>
             </text>
             <text fg={muted()} onMouseUp={() => context.ui.dialog.clear()}>
               esc
@@ -120,11 +120,11 @@ export default Plugin.define({
     context.keymap.layer(() => ({
       commands: [
         {
-          id: "agent-monitor.open",
-          title: "Agent monitor",
+          id: "agent-radar.open",
+          title: "Agent radar",
           description: "Show every subagent of the current session",
           palette: true,
-          slash: { name: "agent-monitor" },
+          slash: { name: "agent-radar" },
           run: () => {
             const route = context.ui.router.current()
             if (route.type !== "session") {
@@ -148,7 +148,7 @@ export default Plugin.define({
                 {sidebar.collapsed ? "▶" : "▼"}
               </text>
               <text fg={base()} onMouseUp={() => openDetail(input.sessionID)}>
-                <b>Agent Monitor</b>
+                <b>Agent Radar</b>
                 {state().live.length > 0 ? ` (${state().live.length})` : ""}
               </text>
             </box>

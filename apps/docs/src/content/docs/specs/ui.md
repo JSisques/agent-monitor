@@ -8,24 +8,24 @@ description: Sidebar panel, detail dialog and command.
 Appended to the `sidebar.content` slot of the session view.
 
 ```text
-▼ Agent Monitor (3)
+▼ Agent Radar (3)
 explore · read · 1m 12s
 explore · grep · 18s
 worker · task · 3m 5s
 ```
 
 - `▼` / `▶` collapses or expands the list. The state is persisted and survives restarts.
-- Title: `Agent Monitor`, followed by the number of running subagents when there is at least one. Clicking the title opens the detail dialog.
+- Title: `Agent Radar`, followed by the number of running subagents when there is at least one. Clicking the title opens the detail dialog.
 - One line per **running direct child** of the main session: `agent · tool · time`.
 - `thinking` replaces the tool while no tool is running.
 - Empty state: `No subagents running`.
 
 ## Detail dialog
 
-Opened by clicking the sidebar title, by `/agent-monitor`, or from the command palette (`Agent monitor`). Large, centered, scrollable; closes with `esc`.
+Opened by clicking the sidebar title, by `/agent-radar`, or from the command palette (`Agent radar`). Large, centered, scrollable; closes with `esc`.
 
 ```text
-Agent Monitor                                              esc
+Agent Radar                                              esc
 
 3 agents · 1 running · 2 done
 wall 3m 47s · agent time 3m 47s (1.0×)
@@ -66,6 +66,6 @@ explore (qwen3.8-27b → gpt-oss-20b) · done · Map the auth module
 
 | Trigger | Action |
 | --- | --- |
-| `/agent-monitor` | Open the detail dialog for the current session |
-| Command palette → `Agent monitor` | Same |
+| `/agent-radar` | Open the detail dialog for the current session |
+| Command palette → `Agent radar` | Same |
 | Outside a session | Toast: `Open a session to see its subagents.` |

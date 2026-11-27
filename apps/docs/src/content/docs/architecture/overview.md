@@ -14,7 +14,7 @@ The project follows a ports-and-adapters (hexagonal) layout. The domain rules kn
 │                                          │
 │  adapter.ts  OpenCodeSessionSource       │  driven adapter: host data → SessionSnapshot[]
 │  tui.tsx     sidebar slot, dialog,       │  driving adapter: renders MonitorState
-│              /agent-monitor command      │
+│              /agent-radar command      │
 └──────────────┬───────────────────────────┘
                │ SessionSource port
                ▼
@@ -52,4 +52,4 @@ The project follows a ports-and-adapters (hexagonal) layout. The domain rules kn
 
 ## Why the core is bundled
 
-`@agent-monitor/core` is private. The plugin build inlines it into `dist/tui.js`, so users install a single package. See [ADR-0005](/adr/0005-bundle-core-into-plugin/).
+`@agent-radar/core` is private. The plugin build inlines it into `dist/tui.js`, so users install a single package. See [ADR-0005](/adr/0005-bundle-core-into-plugin/).

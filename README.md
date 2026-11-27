@@ -1,13 +1,13 @@
-# opencode-agent-monitor
+# opencode-agent-radar
 
 > See what every OpenCode subagent is doing, how long it has been at it, and what it costs, without leaving the TUI.
 
-[![npm](https://img.shields.io/npm/v/opencode-agent-monitor?style=flat-square&logo=npm)](https://www.npmjs.com/package/opencode-agent-monitor)
+[![npm](https://img.shields.io/npm/v/opencode-agent-radar?style=flat-square&logo=npm)](https://www.npmjs.com/package/opencode-agent-radar)
 [![OpenCode 2](https://img.shields.io/badge/OpenCode-2-5A67D8?style=flat-square)](https://opencode.ai/)
-[![CI](https://img.shields.io/github/actions/workflow/status/JSisques/agent-monitor/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/JSisques/agent-monitor/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/JSisques/agent-radar/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/JSisques/agent-radar/actions/workflows/ci.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-yellow?style=flat-square)](LICENSE)
 
-`opencode-agent-monitor` is an OpenCode 2 TUI plugin. When an agent delegates work to subagents, it shows **one row per subagent launch**: the tool it is running right now, its elapsed time, context window usage, tokens and estimated cost.
+`opencode-agent-radar` is an OpenCode 2 TUI plugin. When an agent delegates work to subagents, it shows **one row per subagent launch**: the tool it is running right now, its elapsed time, context window usage, tokens and estimated cost.
 
 > **Status:** early development (`0.x`). The plugin type-checks against `@opencode/plugin` 2.4.2 and its domain rules are covered by unit tests, but it has not been verified inside a live OpenCode host yet. See [Compatibility](#compatibility).
 
@@ -46,13 +46,13 @@ When an OpenCode orchestrator launches three subagents in parallel, the TUI tell
 - **how full** each one's context window is,
 - **how much** each one is costing.
 
-Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenlongapps/opencode-token-usage) report totals for the whole session tree, and per-subagent numbers only when you navigate into that subagent's view. `opencode-agent-monitor` answers a different question: **which subagent is doing what, side by side, right now**.
+Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenlongapps/opencode-token-usage) report totals for the whole session tree, and per-subagent numbers only when you navigate into that subagent's view. `opencode-agent-radar` answers a different question: **which subagent is doing what, side by side, right now**.
 
 ## Features
 
 - **Per-launch rows.** Each subagent launch is its own row. Two `explore` runs are two rows, so you can compare them.
 - **Live sidebar.** A compact, collapsible panel lists only the subagents that are running: `agent · tool · time`.
-- **Full detail on demand.** Click the panel title or run `/agent-monitor` to open a centered dialog with a session summary, the subagents **in progress** and the **history** of finished ones.
+- **Full detail on demand.** Click the panel title or run `/agent-radar` to open a centered dialog with a session summary, the subagents **in progress** and the **history** of finished ones.
 - **Model per subagent.** The detail dialog shows the model each subagent used, and every model it switched to.
 - **Session summary.** Number of subagents, wall time vs agent time with the resulting parallelism, and total tokens and cost.
 - **Nested subagents.** Subagents launched by subagents are hidden from the sidebar and shown, indented, in the detail dialog.
@@ -64,18 +64,18 @@ Existing usage plugins such as [`opencode-token-usage`](https://github.com/chenl
 **Sidebar** (only running direct subagents):
 
 ```text
-▼ Agent Monitor (3)
+▼ Agent Radar (3)
 explore · read · 1m 12s
 explore · grep · 18s
 worker · task · 3m 5s
 ```
 
-`thinking` replaces the tool while the model is generating instead of running a tool. With no running subagents the panel shows `No subagents running`. Click `▼` to collapse the list to `▶ Agent Monitor (3)`; the choice is remembered across restarts.
+`thinking` replaces the tool while the model is generating instead of running a tool. With no running subagents the panel shows `No subagents running`. Click `▼` to collapse the list to `▶ Agent Radar (3)`; the choice is remembered across restarts.
 
-**Detail dialog** (`/agent-monitor` or click the title):
+**Detail dialog** (`/agent-radar` or click the title):
 
 ```text
-Agent Monitor                                              esc
+Agent Radar                                              esc
 
 3 agents · 1 running · 2 done
 wall 3m 47s · agent time 3m 47s (1.0×)
@@ -111,7 +111,7 @@ Requires **OpenCode 2**.
 ### OpenCode CLI
 
 ```sh
-opencode plugin add opencode-agent-monitor@latest
+opencode plugin add opencode-agent-radar@latest
 ```
 
 Restart OpenCode after installing.
@@ -123,15 +123,15 @@ Add the package to your project's `opencode.json` (or `opencode.jsonc`):
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugins": ["opencode-agent-monitor@latest"]
+  "plugins": ["opencode-agent-radar@latest"]
 }
 ```
 
 ### From source
 
 ```sh
-git clone https://github.com/JSisques/agent-monitor.git
-cd agent-monitor
+git clone https://github.com/JSisques/agent-radar.git
+cd agent-radar
 pnpm install
 pnpm build
 ```
@@ -142,13 +142,13 @@ Then add the absolute path of `packages/opencode-plugin` to `plugins` in the tar
 
 | Action | How |
 | --- | --- |
-| See running subagents | Open a session; the **Agent Monitor** panel appears in the sidebar |
+| See running subagents | Open a session; the **Agent Radar** panel appears in the sidebar |
 | Collapse or expand the panel | Click `▼` / `▶` next to the title |
-| Open the detail dialog | Click the **Agent Monitor** title, run `/agent-monitor`, or pick **Agent monitor** in the command palette |
+| Open the detail dialog | Click the **Agent Radar** title, run `/agent-radar`, or pick **Agent radar** in the command palette |
 | Scroll the detail dialog | Mouse wheel |
 | Close the detail dialog | `esc`, or click `esc` in the dialog header |
 
-Running `/agent-monitor` outside a session shows a toast: `Open a session to see its subagents.` The command never sends a prompt to the model.
+Running `/agent-radar` outside a session shows a toast: `Open a session to see its subagents.` The command never sends a prompt to the model.
 
 ## Metrics
 
@@ -214,7 +214,7 @@ flowchart TD
   host[OpenCode TUI host<br/>context.data] -->|sessions, messages, events| adapter
   subgraph plugin[packages/opencode-plugin]
     adapter[adapter.ts<br/>OpenCodeSessionSource]
-    tui[tui.tsx<br/>sidebar slot · dialog · /agent-monitor]
+    tui[tui.tsx<br/>sidebar slot · dialog · /agent-radar]
   end
   subgraph core[packages/core · private, bundled]
     port[ports.ts<br/>SessionSource]
@@ -237,18 +237,18 @@ More detail: [architecture overview](apps/docs/src/content/docs/architecture/ove
 ## Repository layout
 
 ```text
-agent-monitor/
+agent-radar/
 ├── apps/
 │   └── docs/                   Astro + Starlight site: guides, specs, architecture, ADRs
 ├── packages/
-│   ├── core/                   @agent-monitor/core (private): model, port, aggregation, formatting
+│   ├── core/                   @agent-radar/core (private): model, port, aggregation, formatting
 │   │   └── src/
 │   │       ├── model.ts        SessionSnapshot, AgentRow, MonitorState
 │   │       ├── ports.ts        SessionSource port
 │   │       ├── aggregate.ts    buildMonitor(): the aggregation rules
 │   │       ├── format.ts       durations, tokens, cost, sidebar line
 │   │       └── *.test.ts       node:test unit tests
-│   └── opencode-plugin/        opencode-agent-monitor (published)
+│   └── opencode-plugin/        opencode-agent-radar (published)
 │       ├── src/
 │       │   ├── adapter.ts      OpenCode data store → SessionSnapshot
 │       │   └── tui.tsx         sidebar slot, detail dialog, command
@@ -284,11 +284,11 @@ Every root script goes through [Turborepo](https://turbo.build/), so unchanged p
 
 `packages/opencode-plugin/scripts/build.mjs`:
 
-1. **esbuild** bundles `src/tui.tsx` together with `@agent-monitor/core`, keeping JSX untouched (`jsx: "preserve"`).
+1. **esbuild** bundles `src/tui.tsx` together with `@agent-radar/core`, keeping JSX untouched (`jsx: "preserve"`).
 2. **babel-preset-solid** compiles the JSX for OpenTUI's universal renderer (`generate: "universal"`, `moduleName: "@opentui/solid"`).
 3. `@opencode/plugin`, `@opentui/*` and `solid-js` stay external because OpenCode provides them at runtime.
 
-The result is a single `dist/tui.js`, exported as `opencode-agent-monitor/tui`.
+The result is a single `dist/tui.js`, exported as `opencode-agent-radar/tui`.
 
 ### Trying a local build in OpenCode
 
@@ -320,15 +320,46 @@ They pin every rule in [Aggregation rules](#aggregation-rules): one row per laun
 
 Versioning is automated with [release-please](https://github.com/googleapis/release-please); the whole monorepo shares one version.
 
-1. Merge commits to `main` using [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, …).
+1. Squash-merge pull requests into `main` with a [Conventional Commits](https://www.conventionalcommits.org/) title (`feat:`, `fix:`, `docs:`, …). Merge commits repeat the PR title in their body, so release-please would list the change twice.
 2. release-please opens or updates a release PR that bumps every `package.json` and updates `CHANGELOG.md`.
 3. Merging that PR creates the `vX.Y.Z` tag and GitHub release.
-4. The `publish` workflow runs `pnpm check`, packs `packages/opencode-plugin` and publishes it to npm through trusted publishing (OIDC). `@agent-monitor/core` is private and never published.
+4. The `publish` workflow runs `pnpm check`, packs `packages/opencode-plugin` and publishes it to npm through trusted publishing (OIDC). `@agent-radar/core` is private and never published.
 
-Repository setup:
+The release manifest starts at `0.0.0`, so the first release is `0.1.0`. While the version is below `1.0.0`, `feat:` bumps the minor version and `fix:` the patch version.
 
-- Secret `RELEASE_PLEASE_TOKEN`: a token allowed to open PRs, so release PRs trigger CI.
-- npm: configure trusted publishing for `opencode-agent-monitor` pointing at `.github/workflows/publish.yml`.
+### Repository setup
+
+- Secret `RELEASE_PLEASE_TOKEN`: a personal access token allowed to open PRs and create releases. Releases created with the default `GITHUB_TOKEN` do not trigger other workflows, so `publish` would never run.
+- Merge settings: allow squash merging only.
+
+### First publish (one time)
+
+npm configures trusted publishing per package, so the package has to exist before CI can publish it:
+
+1. Merge the first release PR. The `publish` workflow for `v0.1.0` fails with `ENEEDAUTH`; that is expected.
+2. Publish that tag by hand:
+
+   ```sh
+   git checkout v0.1.0
+   pnpm install --frozen-lockfile
+   pnpm check
+   cd packages/opencode-plugin
+   npm login
+   pnpm pack
+   npm publish opencode-agent-radar-0.1.0.tgz --access public
+   ```
+
+3. Trust the workflow (npm CLI 11.10+):
+
+   ```sh
+   npm trust github opencode-agent-radar --repo JSisques/agent-radar --file publish.yml --allow-publish
+   ```
+
+   `--allow-publish` is required: trusted publishers created after 3 September 2026 only allow `npm stage publish` by default, and the workflow runs `npm publish`. The first trusted publish must happen within 2 days of creating the configuration, or it expires.
+
+4. Optional hardening: on npmjs.com, set **Publishing access** to *Require two-factor authentication and disallow tokens*.
+
+From then on every release PR merge publishes automatically, with provenance.
 
 ## Documentation site
 
@@ -339,7 +370,7 @@ Repository setup:
 | Guides | Installation, usage, development |
 | Specs | [Metrics](apps/docs/src/content/docs/specs/metrics.md), [UI](apps/docs/src/content/docs/specs/ui.md) |
 | Architecture | [Overview](apps/docs/src/content/docs/architecture/overview.md) |
-| Decisions (ADR) | [0001 monorepo](apps/docs/src/content/docs/adr/0001-monorepo-layout.md) · [0002 one row per launch](apps/docs/src/content/docs/adr/0002-one-row-per-launch.md) · [0003 aggregation rules](apps/docs/src/content/docs/adr/0003-aggregation-rules.md) · [0004 sidebar vs detail](apps/docs/src/content/docs/adr/0004-sidebar-live-detail-history.md) · [0005 bundle core](apps/docs/src/content/docs/adr/0005-bundle-core-into-plugin.md) · [0006 summary and sections](apps/docs/src/content/docs/adr/0006-detail-summary-and-sections.md) |
+| Decisions (ADR) | [0001 monorepo](apps/docs/src/content/docs/adr/0001-monorepo-layout.md) · [0002 one row per launch](apps/docs/src/content/docs/adr/0002-one-row-per-launch.md) · [0003 aggregation rules](apps/docs/src/content/docs/adr/0003-aggregation-rules.md) · [0004 sidebar vs detail](apps/docs/src/content/docs/adr/0004-sidebar-live-detail-history.md) · [0005 bundle core](apps/docs/src/content/docs/adr/0005-bundle-core-into-plugin.md) · [0006 summary and sections](apps/docs/src/content/docs/adr/0006-detail-summary-and-sections.md) · [0007 rename](apps/docs/src/content/docs/adr/0007-rename-to-agent-radar.md) |
 
 ```sh
 pnpm docs:dev
